@@ -1,0 +1,68 @@
+- name: Alerta | install dependencies
+  yum: name={{ item }} state=installed
+  with_items:
+    - python-devel
+    - gcc
+    - python-pip
+    - wget
+
+- name: Alerta | upgrade pip
+  command: "pip install --upgrade pip"
+  changed_when: false
+
+- name: Alerta | pip install alerta and uwsgi
+  pip: name={{ item }}
+  with_items:
+    - alerta-server
+    - alerta
+    - uwsgi
+
+- name: Alerta | Create required directories
+  file: path={{ item }} state=directory owner=nginx group=nginx
+  with_items:
+    - "/var/www/html"
+    - "/run/uwsgi"
+    - "/var/log/alerta/"
+
+- name: Alerta | download web console
+  get_url:
+    url: https://github.com/alerta/angular-alerta-webui/tarball/master
+    dest: /var/www/html/alerta-webui.tar.gz
+
+- name: Alerta | unzip web console
+  unarchive:
+    src: /var/www/html/alerta-webui.tar.gz
+    dest: /var/www/html
+    remote_src: yes
+
+- name: Alerta | install web console
+  shell: "mv alerta*/app/* ."
+  args:
+    chdir: /var/www/html
+    creates: /var/www/html/config.js
+
+- name: Alerta | Configure wsgi.py
+  template: src=wsgi.py.j2 dest=/var/www/wsgi.py
+
+- name: Alerta | Configure uwsgi.ini
+  template: src=uwsgi.ini.j2 dest=/etc/uwsgi.ini
+
+- name: Alerta | Configure alertad.conf
+  template: src=alertad.conf.j2 dest=/etc/alertad.conf
+
+- name: Alerta | create uwsgi.ini service
+  template: src=uwsgi.service.j2 dest=/etc/systemd/system/uwsgi.service
+
+- name: Alerta | create config.js
+  template: src=config.js.j2 dest=/var/www/html/config.js
+
+- name: Alerta | install prometheus plugins
+  shell: "pip install git+https://github.com/alerta/alerta-contrib.git#subdirectory=plugins/prometheus"
+
+- name: Alerta | Enable uwsgi service
+  service: name=uwsgi state=started enabled=yes
+
+- name: Alerta | Configure alerta Vhost
+  template: src=nginx_alerta.conf.j2 dest=/etc/nginx/conf.d/_alerta.conf owner={{ nginx_user | default("nginx") }} group={{ nginx_group | default("nginx")  }} mode=0644
+  notify:
+    - restart nginx

@@ -1,0 +1,16 @@
+SEVERITY_MAP = {
+    'fatal': 0,
+    'critical': 1,
+    'warning': 4,
+    'indeterminate': 5,
+    'ok': 5,
+    'unknown': 9
+}
+
+BASE_URL = '/api'
+
+PLUGINS=['prometheus']
+ALERTMANAGER_API_URL = 'http://localhost:9093'
+ALERTMANAGER_SILENCE_DAYS = 1
+
+LOG_FILE = '/var/log/alerta/alerta.log'

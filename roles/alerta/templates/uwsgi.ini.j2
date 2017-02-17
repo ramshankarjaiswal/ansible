@@ -1,0 +1,17 @@
+[uwsgi]
+chdir = /var/www
+mount = /api=wsgi.py
+callable = app
+manage-script-name = true
+
+master = true
+processes = 5
+logger = syslog:alertad
+
+socket = /run/uwsgi/uwsgi.sock
+chmod-socket = 664
+uid = nginx
+gid = nginx
+vacuum = true
+
+die-on-term = true

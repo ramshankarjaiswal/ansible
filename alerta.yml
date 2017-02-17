@@ -1,0 +1,6 @@
+- hosts: alerta
+  roles:
+    - alerta
+  tags:
+    - alerta
+  become: true

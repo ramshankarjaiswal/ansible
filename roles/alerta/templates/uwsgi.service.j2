@@ -1,0 +1,9 @@
+[Unit]
+Description=uWSGI service
+
+[Service]
+ExecStartPre=/bin/bash -c 'mkdir -p /run/uwsgi; chown nginx:nginx /run/uwsgi'
+ExecStart=/usr/bin/uwsgi --ini /etc/uwsgi.ini
+
+[Install]
+WantedBy=multi-user.target
