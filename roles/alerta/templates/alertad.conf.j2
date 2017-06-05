@@ -9,8 +9,16 @@ SEVERITY_MAP = {
 
 BASE_URL = '/api'
 
-PLUGINS=['prometheus']
-ALERTMANAGER_API_URL = 'http://localhost:9093'
+PLUGINS=['prometheus','customtimeout']
+CUSTOM_TIMEOUT = 21600
+#ALERTMANAGER_API_URL = 'http://{{ prometheus_ip }}:9093'
 ALERTMANAGER_SILENCE_DAYS = 1
 
 LOG_FILE = '/var/log/alerta/alerta.log'
+
+#AUTH_REQUIRED = True
+#ADMIN_USERS = ['myemail@domain']
+#ALLOWED_EMAIL_DOMAINS = ['mydomain']
+
+SECRET_KEY = '{{ alerta_secretkey.stdout }}'
+

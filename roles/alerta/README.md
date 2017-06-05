@@ -1,8 +1,11 @@
 # Alerta
 
-This role will install alerta ( http://alerta.io/ ) along with the prometheus alerta plugin.
+This role will install alerta ( http://alerta.io/ ) along with the prometheus alerta plugin and a custom plugin called customtimeout written by https://github.com/twcollins
+- The customtimeout plugin expires stale alerts from alerta. The default expiry period is 21600 seconds i.e. 6 hours. This can be changed through /etc/alertad.conf CUSTOM_TIMEOUT = 21600
 
-The alerta monitoring system is a tool used to consolidate and de-duplicate alerts from multiple sources for quick ‘at-a-glance’ visualization. Alerta can be used as a part of monitoring stack to provide a dashboards for all the alerts that get generated from monitoring. Alerta can be integrated with Prometheus-Alertmanager, alerts that are acknowledged in alerta get silenced in the alertmanager.
+The alerta monitoring system is a tool used to consolidate and de-duplicate alerts from multiple sources for quick ‘at-a-glance’ visualization. Alerta can be used as a part of monitoring stack to provide a dashboards for all the alerts that get generated from monitoring.
+
+Alerta can be integrated with Prometheus-Alertmanager, alerts that are acknowledged in alerta get silenced in the alertmanager.
 
 - Supported OS
   - Centos/Redhat 7
@@ -22,11 +25,10 @@ Example Playbook
 `ansible-playbook alerta.yml -i /path/to/my/inventory`
 
 ## Dependencies
-This role assumes that nginx and mongodb is already installed on the server
 
 
 ## Deploying and Running Alerta
-After deploying alerta using the ansible role, the following changes have to be made -
+After deploying alerta using this ansible role, the following changes have to be made -
 
 Modify the alerta configuration ( /etc/alertad.conf ) to specify the alertmanager_api_url i.e. replace localhost with the ip/hostname of the actual server where you are running alertmanager.
 

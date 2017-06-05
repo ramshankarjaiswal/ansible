@@ -1,3 +1,6 @@
+- include: nginx.yml
+- include: mongodb.yml
+
 - name: Alerta | install dependencies
   yum: name={{ item }} state=installed
   with_items:
@@ -5,6 +8,7 @@
     - gcc
     - python-pip
     - wget
+    - git
 
 - name: Alerta | upgrade pip
   command: "pip install --upgrade pip"
@@ -47,6 +51,11 @@
 - name: Alerta | Configure uwsgi.ini
   template: src=uwsgi.ini.j2 dest=/etc/uwsgi.ini
 
+- name: Alerta | Generate alerta_secretkey
+  shell: cat /dev/urandom | tr -dc A-Za-z0-9_\!\@\#\$\%\^\&\*\(\)-+= | head -c 32 && echo
+  register: alerta_secretkey
+  changed_when: false
+
 - name: Alerta | Configure alertad.conf
   template: src=alertad.conf.j2 dest=/etc/alertad.conf
 
@@ -58,6 +67,28 @@
 
 - name: Alerta | install prometheus plugins
   shell: "pip install git+https://github.com/alerta/alerta-contrib.git#subdirectory=plugins/prometheus"
+
+- name: Alerta | Copy plugin
+  copy:
+    src: "{{ item }}.zip"
+    dest: /opt/{{ item }}.zip
+  with_items:
+    - "{{ alerta_plugins }}"
+
+- name: Alerta | unzip plugins
+  unarchive:
+    src: /opt/{{ item }}.zip
+    dest: /opt/
+    remote_src: yes
+  with_items:
+    - "{{ alerta_plugins }}"
+
+- name: Alerta | install plugins
+  shell: "python setup.py install"
+  args:
+    chdir: /opt/{{ item }}
+  with_items:
+    - "{{ alerta_plugins }}"
 
 - name: Alerta | Enable uwsgi service
   service: name=uwsgi state=started enabled=yes

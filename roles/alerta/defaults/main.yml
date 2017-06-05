@@ -1,0 +1,7 @@
+---
+alerta_plugins:
+  - customtimeout-0.0.2
+
+prometheus_ip: "127.0.0.1"
+
+nginx_version: "1.10.2-1"

@@ -1,0 +1,12 @@
+auth=False
+logpath={{mongodb_conf_logpath | default("/var/log/mongodb/mongodb.log")}}
+logappend={{mongodb_conf_logappend | default("true") }}
+fork={{mongodb_conf_fork | default("true") }}
+dbpath=/data/mongodb
+pidfilepath={{mongodb_conf_pidpath | default("/var/run/mongodb/mongod.pid")}}
+bind_ip={{mongodb_conf_bind_ip | default("127.0.0.1") }}
+nojournal={{mongodb_conf_nojournal | default("false")}}
+port={{mongodb_conf_port | default(27017)}}
+rest={{mongodb_conf_rest | default("false") }}
+smallfiles={{mongodb_conf_smallfiles | default("false")}}
+

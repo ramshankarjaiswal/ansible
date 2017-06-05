@@ -1,0 +1,27 @@
+---
+- name: mongodb | Install pymongo and mongodb
+  yum:
+    name: "{{ item }}"
+    state: present
+  notify: restart mongod
+  with_items:
+    - pymongo
+    - "https://repo.mongodb.org/yum/redhat/7Server/mongodb-org/3.4/x86_64/RPMS/mongodb-org-3.4.4-1.el7.x86_64.rpm"
+    - "https://repo.mongodb.org/yum/redhat/7/mongodb-org/3.4/x86_64/RPMS/mongodb-org-mongos-3.4.4-1.el7.x86_64.rpm"
+    - "https://repo.mongodb.org/yum/redhat/7/mongodb-org/3.4/x86_64/RPMS/mongodb-org-server-3.4.4-1.el7.x86_64.rpm"
+    - "https://repo.mongodb.org/yum/redhat/7/mongodb-org/3.4/x86_64/RPMS/mongodb-org-shell-3.4.4-1.el7.x86_64.rpm"
+    - "https://repo.mongodb.org/yum/redhat/7/mongodb-org/3.4/x86_64/RPMS/mongodb-org-tools-3.4.4-1.el7.x86_64.rpm"
+
+- name: mongodb | Create DB directory
+  file: path=/data/mongodb state=directory owner=mongod group=mongod
+
+- name: mongodb | Configure mongodb
+  template: src=mongodb.conf.j2 dest=/etc/mongod.conf owner=mongod group=mongod backup=yes mode=0644
+  notify: restart mongod
+
+- name: start mongod
+  service:
+    name: mongod
+    enabled: yes
+    state: started
+

@@ -1,4 +1,12 @@
 ---
-
 - name: restart nginx
-  service: name=nginx state=restarted
+  service: name=nginx state=restarted enabled=yes
+
+- name: restart uwsgi
+  service: name=uwsgi state=restarted enabled=yes
+
+- name: restart mongod
+  service:
+    name: mongod
+    enabled: yes
+    state: restarted

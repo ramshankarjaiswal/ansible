@@ -1,6 +1,24 @@
 server {
-        listen 8080;
-        listen [::]:8080;
+    listen 80;
+#     return 301 https://$host$request_uri;
+# }
+#
+#
+# server {
+#         listen 443;
+#         listen [::]:443;
+#         server_name alerta.{{ inventory_hostname }};
+#
+# ssl_certificate           /etc/nginx/wildcard.crt;
+# ssl_certificate_key       /etc/nginx/wildcard.key;
+#
+# ssl on;
+# ssl_session_cache  builtin:1000  shared:SSL:10m;
+# ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
+# ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;
+# ssl_prefer_server_ciphers on;
+#
+# add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
         location /api { try_files $uri @api; }
         location @api {
@@ -15,3 +33,4 @@ server {
                 root /var/www/html;
         }
 }
+
