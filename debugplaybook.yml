@@ -1,0 +1,23 @@
+- hosts: all
+  vars:
+     var1: true
+  #   var2: 200
+  # remote_user: root
+  tasks:
+  - name: one
+    command: "pwd"
+    register: var2
+    when: var1
+
+  - name: two
+    command: "ls"
+    register: var2
+    when: not var1
+  #
+  # - name: three
+  #   command: /bin/echo three
+  #   when: var2.changed
+
+  - name: debug
+    debug:
+      msg: "{{ var2 }}"
