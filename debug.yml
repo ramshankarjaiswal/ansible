@@ -1,0 +1,6 @@
+- hosts: postgres-slave
+  remote_user: root
+  tasks:
+  - name: debug
+    debug:
+      msg: "inventory hostname is {{ inventory_hostname }}"

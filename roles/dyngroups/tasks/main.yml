@@ -1,0 +1,14 @@
+---
+- name: Create groups based on AWS env tag
+  group_by: key={{ ec2_tag_env }}
+  changed_when: false
+
+- name: create groups based on role tag
+  group_by: key={{ ec2_tag_role }}
+  changed_when: false
+  tags:
+    - always
+
+- name: Create groups based on OS
+  group_by: key={{ ansible_distribution }}
+  changed_when: false

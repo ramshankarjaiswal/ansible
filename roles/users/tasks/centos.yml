@@ -1,0 +1,18 @@
+- name: add sudo users
+  user:
+    name: "{{ item['username'] }}"
+    groups: wheel
+  with_items: '{{ sudo_users }}'
+  tags:
+    - users
+
+- name: Allow sudo users to nopasswd
+  template:
+    src: wheel.j2
+    dest: /etc/sudoers.d/wheel
+    mode: 0440
+    owner: root
+    group: root
+    backup: yes
+  tags:
+    - users

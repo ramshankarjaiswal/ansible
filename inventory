@@ -1,6 +1,15 @@
+[all:vars]
+ansible_user=root
+
 [local]
 localhost
 
 [local:vars]
 ansible_connection=local
 ansible_user=root
+
+[postgres]
+192.168.122.222
+
+[postgres-slave]
+postgres-slave ansible_host=192.168.122.217

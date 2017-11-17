@@ -1,0 +1,33 @@
+---
+- name: add ssh users
+  user:
+    name: "{{ item['username'] }}"
+    shell: "{{ item['shell'] }}"
+  with_items: '{{ ssh_users }}'
+  tags:
+    - users
+
+# Your key needs to be named $yourusername.key and placed in the ./files/pubkeys dir
+- name: add authorized keys for users
+  authorized_key:
+    user: "{{ item['username'] }}"
+    key: "{{ lookup('file', 'pubkeys/' + item['username'] + '.key') }}"
+    state: present
+  with_items: '{{ ssh_users }}'
+  tags:
+    - users
+
+- name: remove former users
+  user:
+    user: "{{ item }}"
+    remove: yes
+    state: absent
+  with_items: '{{ removed_users }}'
+  tags:
+    - users
+
+- include: ubuntu.yml
+  when: ansible_os_family == 'Debian'
+
+- include: centos.yml
+  when: ansible_os_family == 'RedHat'

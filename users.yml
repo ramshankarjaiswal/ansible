@@ -1,0 +1,6 @@
+- hosts: all
+  roles:
+    - users
+  tags:
+    - users
+  become: true

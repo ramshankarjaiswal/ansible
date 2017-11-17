@@ -1,0 +1,16 @@
+---
+myteam:
+  - username: user1
+    shell: /bin/bash
+
+# These folks have users created and keys
+ssh_users:
+  - "{{ myteam }}"
+
+# People who can sudo as root
+sudo_users:
+  - "{{ myteam }}"
+
+#Users that need to be removed
+removed_users:
+  - deleteduser1
