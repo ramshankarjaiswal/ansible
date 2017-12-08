@@ -19,7 +19,8 @@ To verify that you are able to ssh to the hosts in your inventory.
 
 #### Things you may want to change based on your environment.
 
-inventory/ec2.ini
+##### inventory/ec2.ini
+
 **Line 16** - You may only be using a few regions of AWS so limit it to them
 >`regions = ap-southeast-1`
 
