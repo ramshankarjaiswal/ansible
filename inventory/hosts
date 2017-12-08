@@ -6,10 +6,8 @@ localhost
 
 [local:vars]
 ansible_connection=local
-ansible_user=root
 
 [postgres]
-192.168.122.222
+127.0.0.1
 
-[postgres-slave]
-postgres-slave ansible_host=192.168.122.217
+postgres-slave ansible_host=127.0.0.1
