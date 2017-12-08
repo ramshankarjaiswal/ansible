@@ -16,14 +16,17 @@ To verify that you are able to ssh to the hosts in your inventory.
 >ansible all -m ping
 
 
-Things you may want to change based on your environment.
+
+#### Things you may want to change based on your environment.
 
 inventory/ec2.ini
-Line 16 - You may only be using a few regions of AWS so limit it to them
+**Line 16** - You may only be using a few regions of AWS so limit it to them
 >`regions = ap-southeast-1`
 
-Line 173 - You may want to apply filter based on tags to only fetch those resources from aws.
+**Line 173** - You may want to apply filter based on tags to only fetch those resources from aws.
 >instance_filters = tag:env=staging
+
+
 
 
 
