@@ -1,0 +1,4 @@
+export ZOO_LOG_DIR={{ zookeeper_log_dir }}
+TOTAL_MEM=$(free -m | grep Mem: | awk '{print $2}')
+MEM=$(( 50 * $TOTAL_MEM / 100))
+export JVMFLAGS="-Xms${MEM}m -Xmx${MEM}m"

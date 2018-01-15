@@ -1,0 +1,12 @@
+{% for server in groups[kafka_aws_group] %}
+{% if server == inventory_hostname %}
+broker.id={{ loop.index }}
+{% endif %}
+{% endfor %}
+port=9092
+host.name={{ hostvars[inventory_hostname].ansible_default_ipv4.address }}
+num.partitions={{ kafka_num_partitions }}
+log.dir={{ kafka_log_dir }}
+zookeeper.connect={% for server in groups[zookeeper_aws_group] %}{{ hostvars[server].ansible_default_ipv4.address }}:2181{% if not loop.last %},{% endif %}{% endfor %}{{ "\n" -}}
+controlled.shutdown.enable=true
+delete.topic.enable=true

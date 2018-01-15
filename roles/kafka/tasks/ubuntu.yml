@@ -1,0 +1,7 @@
+- name: create kafka service
+  template:
+    src: kafka.conf.j2
+    dest: /etc/init/kafka.conf
+    owner: root
+    group: root
+    mode: 644

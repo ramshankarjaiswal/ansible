@@ -1,0 +1,16 @@
+- name: copy env.sh config
+  template:
+    src: env.sh.j2
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_group }}"
+    dest: "{{ kafka_home_dir }}/config/env.sh"
+  notify:
+    - restart kafka
+
+- name: add start script
+  template:
+    src: kafka.service.j2
+    dest: /usr/lib/systemd/system/kafka.service
+  tags: deploy
+  notify:
+    - restart kafka

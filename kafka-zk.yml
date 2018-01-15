@@ -1,0 +1,17 @@
+---
+#This role is dependent on java.. currently my repo does not have a role for java.. this needs to be created.
+- hosts: tag_Service_kafka
+  vars:
+    zookeeper_aws_group: tag_Service_kafka
+    kafka_aws_group: tag_Service_zookeeper
+    kafka_home_dir: /opt/kafka_{{ kafka_major }}-{{ kafka_minor }}
+    kafka_log_dir: "{{ kafka_home_dir }}/kafka-logs"
+    kafka_user: kafka
+    kafka_group: kafka
+    kafka_major: "1"
+    kafka_minor: "0"
+    kafka_num_partitions: 2
+  roles:
+    # - {role: java, tags: ['java']}
+    - {role: zookeeper, tags: ['java']}
+    - {role: kafka, tags: ['kafka']}

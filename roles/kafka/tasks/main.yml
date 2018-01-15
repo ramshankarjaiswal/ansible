@@ -1,0 +1,100 @@
+---
+- name: create kafka group
+  group:
+    name: "{{ kafka_group }}"
+    system: yes
+
+- name: create kafka user
+  user:
+    name: "{{ kafka_user }}"
+    group: "{{ kafka_group }}"
+    system: yes
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "/opt/src"
+    - "{{ kafka_home_dir }}"
+
+- name: download kafka
+  get_url:
+    url: "http://www-us.apache.org/dist/kafka/1.0.0/kafka_2.11-1.0.0.tgz"
+    dest: /opt/src/kafka_{{ kafka_major }}-{{ kafka_minor }}.tgz
+
+# - name: extract tarball
+#   unarchive:
+#     src: /opt/src/kafka_{{ kafka_major }}-{{ kafka_minor }}.tgz
+#     dest: "{{ kafka_home_dir }}"
+#     creates: "{{ kafka_home_dir }}/bin"
+#     remote_src: yes
+
+- name: extract tarball
+  command: tar zxf /opt/src/kafka_{{ kafka_major }}-{{ kafka_minor }}.tgz --strip-components=1
+  args:
+    chdir: "{{ kafka_home_dir }}"
+    creates: "{{ kafka_home_dir }}/bin"
+
+- name: create kafka soft link for logging
+  file:
+    src: "{{ kafka_home_dir }}"
+    dest: /opt/kafka
+    state: link
+
+- name: change ownership on kafka directory
+  file:
+    path: "{{ kafka_home_dir}}"
+    state: directory
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_group }}"
+    recurse: yes
+
+- name: create log directory
+  file:
+    path: "{{ kafka_log_dir }}"
+    state: directory
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_group }}"
+
+- name: copy server.properties
+  template:
+    src: server.properties.j2
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_group }}"
+    dest: "{{ kafka_home_dir }}/config/server.properties"
+    backup: yes
+  notify:
+    - restart kafka
+
+- name: enable jmx for monitoring purpose
+  lineinfile:
+#use 'dest' instead of 'path' if using ansible version before 2.3
+    path: "{{ kafka_home_dir }}/bin/kafka-server-start.sh"
+    insertbefore: '^exec'
+    line: 'export JMX_PORT=${JMX_PORT:-9999}'
+    backup: yes
+  tags:
+    - jmx
+
+- include: centos.yml
+  when:
+    ansible_os_family: 'RedHat'
+
+- include: ubuntu.yml
+  when:
+    ansible_os_family: 'Debian'
+
+- name: start kafka
+  service:
+    name: kafka
+    state: started
+    enabled: yes
+
+- wait_for:
+    host: "{{ ansible_ssh_host }}"
+    port: 9092
+  connection: local
+
+# - name: create exposure_import_task topic
+#   kafka_topic: name=testtopic state=present

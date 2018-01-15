@@ -1,0 +1,16 @@
+[Unit]
+Description=Kafka
+
+[Service]
+Type=forking
+User={{ kafka_user }}
+Group={{ kafka_group }}
+EnvironmentFile={{ kafka_home_dir }}/config/env.sh
+ExecStart={{ kafka_home_dir }}/bin/kafka-server-start.sh -daemon {{ kafka_home_dir }}/config/server.properties
+ExecStop={{ kafka_home_dir }}/bin/kafka-server-stop.sh
+Restart=on-failure
+
+TimeoutSec=180
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,10 @@
+---
+zookeeper_log_level: WARN
+zookeeper_maxClientCnxns: 60
+zookeeper_client_port: 2181
+zookeeper_tick_time: 2000
+zookeeper_dir: /opt/zookeeper
+zookeeper_data_dir: /var/lib/zookeeper
+zookeeper_log_dir: /var/log/zookeeper
+zookeeper_init_limit: 5
+zookeeper_sync_limit: 2
